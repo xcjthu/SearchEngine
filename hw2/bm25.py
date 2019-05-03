@@ -7,11 +7,13 @@ class BM25:
 		# self.k2 = k2
 		self.b = b
 
+		self.average_len = 1260.7
+
 	def score(self, query, doc):
 		words = query.split()
 		doc_words = doc.split()
 
-		K = self.k1 * (1 - self.b + b * len(words))
+		K = self.k1 * (1 - self.b + b * len(words) / self.average_len)
 
 		words = set(words)
 		words_num = {}
@@ -24,6 +26,8 @@ class BM25:
 
 		ans = 0
 		for w in set(words):
+			if not w in self.idf:
+				continue
 			ans += self.idf[w] * words_num[w] * (self.k1 + 1) / (words_num[w] + K)
 		return ans
 
