@@ -40,5 +40,5 @@ print(len(term_dict_new.keys()))
 
 term_new_path = '../../term_idf_new.json'
 term_new = open(term_new_path, 'w', encoding = 'utf-8')
-term_new.write(json.dumps(term_dict_new, ensure_ascii=False))
+term_new.write(json.dumps(term_dict_new, ensure_ascii=False, indent=2))
 term_new.close()

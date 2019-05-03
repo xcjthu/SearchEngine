@@ -3,7 +3,7 @@ import json
 
 class TFIDF:
 	def __init__(self, idf_path):
-		idf = json.loads(open(idf_path, 'r').read())# idf
+		idf = json.loads(open(idf_path, 'r', encoding='utf-8').read())# idf
 		self.idf = []
 		self.vocabulay = {}
 		for v in idf:
@@ -12,7 +12,7 @@ class TFIDF:
 
 	def transform(self, doces):
 		ans = np.zeros((len(doces), len(self.idf)))
-		for i in len(doces):
+		for i in range(len(doces)):
 			doc = doces[i]
 			words = doc.split()
 			for w in words:
@@ -26,5 +26,4 @@ class TFIDF:
 		query_vec = np.linalg.norm(self.transform([query]), axis = 1)
 
 		score = query_vec * np.transpose(doc_vec)
-		return score.toarray()
-
+		return score

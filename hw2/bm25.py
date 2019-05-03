@@ -3,7 +3,7 @@ import numpy as np
 
 class BM25:
 	def __init__(self, idf_path, k1 = 2, b = 0.75):
-		self.idf = json.loads(open(idf_path, 'r').read())# idf
+		self.idf = json.loads(open(idf_path, 'r', encoding = 'utf8').read())# idf
 		self.k1 = k1
 		# self.k2 = k2
 		self.b = b
@@ -14,7 +14,7 @@ class BM25:
 		words = query.split()
 		doc_words = doc.split()
 
-		K = self.k1 * (1 - self.b + b * len(words) / self.average_len)
+		K = self.k1 * (1 - self.b + self.b * len(words) / self.average_len)
 
 		words = set(words)
 		words_num = {}
@@ -34,7 +34,7 @@ class BM25:
 		return ans
 
 	def similarity(self, query, doces):
-		ans = np.zeros((1, len(doces)))
+		ans = np.zeros((len(doces)))
 		for i in range(len(doces)):
 			ans[i] = self.score(query, doces[i])
 		return ans
