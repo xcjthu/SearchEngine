@@ -1,4 +1,5 @@
 import json
+import numpy as np
 
 class BM25:
 	def __init__(self, idf_path, k1 = 2, b = 0.75):
