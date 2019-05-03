@@ -28,6 +28,7 @@ class BM25:
 		ans = 0
 		for w in set(words):
 			if not w in self.idf:
+				ans += 3 * words_num[w] * (self.k1 + 1) / (words_num[w] + K)
 				continue
 			ans += self.idf[w] * words_num[w] * (self.k1 + 1) / (words_num[w] + K)
 		return ans
