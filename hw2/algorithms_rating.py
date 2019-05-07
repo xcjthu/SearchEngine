@@ -28,7 +28,7 @@ f.close()
 print('read true label finished')
 
 
-output_filepath = 'result_bm25.txt'
+output_filepath = 'result_query_likelihood.txt'
 f = open(output_filepath, 'w', encoding = 'utf8')
 
 ks = [5, 10, 20]
