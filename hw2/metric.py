@@ -3,10 +3,12 @@ import random
 from pyNTCIREVAL import Labeler
 from pyNTCIREVAL.metrics import nERR, QMeasure, MSnDCG, nDCG
 
+label_range = 4
+
 def data_process(y_pred, y_true):
     qrels = {}
     ranked_list = []
-    c = zip(y_pred, y_true)
+    c = list(zip(y_pred, y_true))
     random.shuffle(c)
     c = sorted(c, key=lambda x:x[0], reverse=True)
     for i in range(len(c)):
@@ -42,9 +44,9 @@ def n_err(y_pred, y_true, k):
 
 if __name__ == '__main__':
     label_range = 4  # 4级相关性标注（0，1，2，3）
-    print n_dcg([0, 1, 2, 3], [1, 2, 3, 0], k=3)  # y_pred: 预测的分数, y_true: 对应的relevance, k: cutoff
-    print q_measure([0, 1, 2, 3], [1, 2, 3, 0], k=3)
-    print n_err([0, 1, 2, 3], [1, 2, 3, 0], k=3)
+    print (n_dcg([0, 1, 2, 3], [1, 2, 3, 0], k=3))  # y_pred: 预测的分数, y_true: 对应的relevance, k: cutoff
+    print (q_measure([0, 1, 2, 3], [1, 2, 3, 0], k=3))
+    print (n_err([0, 1, 2, 3], [1, 2, 3, 0], k=3))
 
 '''
 注意在每个query内部根据给出的文档列表计算以上评价指标，最后汇报在全部query上的平均值
