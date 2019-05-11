@@ -12,26 +12,22 @@ class Query_Likelihood:
 	def score(self, query, doc):
 		words = doc.split()
 		qwords = query.split()
-		cw = {}
 		
-		for w in set(words):
-			cw[w] = 0
-
+		cw = {}
 		for w in words:
 			if w in cw.keys():
 				cw[w] += 1
+			else:
+				cw[w] = 1
 
 		ans = 0
-		for w in query:
+		for w in qwords:
 			if w not in cw.keys():
 				cw[w] = 0
 			if w in self.idf:
-				# print(w)
-				# print(self.idf[w])
-				# print(cw[w])
 				p = (1 - self.lamb) * cw[w] / len(words) + self.lamb / self.idf[w]
 			else:
-				p = self.lamb / 4
+				p = self.lamb / 5
 			ans += p
 
 		return ans
