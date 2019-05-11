@@ -4,7 +4,7 @@ from query_likelihood import Query_Likelihood
 import json
 
 path = '../../term_idf_new_new.json'
-tfidf = TFIDF(path)
+tfidf = BM25(path)
 
 query_filepath = '../../ntcir14_test_query.json'
 query_file = open(query_filepath, 'r', encoding='utf-8')
@@ -62,7 +62,7 @@ for query_pair in queries:
 		scores[docs_id[round*PACK + j]] = score[j]
 	tot_scores[query_id] = sorted(scores.items(), key=lambda item:item[1], reverse=True)
 
-output_path = '../../tfidf.json'
+output_path = '../../bm25.json'
 output_file = open(output_path, 'w', encoding='utf-8')
 output_file.write(json.dumps(tot_scores, ensure_ascii=False, indent=2))
 output_file.close()

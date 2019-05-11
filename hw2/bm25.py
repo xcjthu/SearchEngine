@@ -14,7 +14,7 @@ class BM25:
 		words = query.split()
 		doc_words = doc.split()
 
-		K = self.k1 * (1 - self.b + self.b * len(words) / self.average_len)
+		K = self.k1 * (1 - self.b + self.b * len(doc_words) / self.average_len)
 
 		words = set(words)
 		words_num = {}
