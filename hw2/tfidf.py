@@ -6,6 +6,7 @@ class TFIDF:
 	def __init__(self, idf_path):
 		self.idf = json.loads(open(idf_path, 'r').read())# idf
 		'''
+		idf = json.loads(open(idf_path, 'r', encoding='utf-8').read())# idf
 		self.idf = []
 		self.vocabulay = {}
 		for v in idf:
@@ -36,6 +37,7 @@ class TFIDF:
 			if w in doc_tf:
 				dot += (doc_tf[w] / len(doc_words)) * (q_tf[w] / len(words)) * self.idf[w] * self.idf[w]
 
+
 		q_l = 0
 		for w in q_tf:
 			q_l += (q_tf[w]/len(words)) * (q_tf[w]/len(words))
@@ -54,4 +56,3 @@ class TFIDF:
 			ans[i] = self.score(query, doces[i])
 
 		return ans
-
