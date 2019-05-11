@@ -4,7 +4,7 @@ from query_likelihood import Query_Likelihood
 import json
 
 path = '../../term_idf_new_new.json'
-tfidf = Query_Likelihood(path)
+tfidf = TFIDF(path)
 
 query_filepath = '../../ntcir14_test_query.json'
 query_file = open(query_filepath, 'r', encoding='utf-8')
@@ -53,7 +53,7 @@ for query_pair in queries:
 	query_id = query_pair[1]
 	scores = {}
 	for i in range(round):
-		print(i)
+		print(query_id, i)
 		score = tfidf.similarity(query, docs_content[i*PACK: (i+1)*PACK])
 		for j in range(len(score)):
 			scores[docs_id[i*PACK + j]] = score[j]
@@ -62,7 +62,7 @@ for query_pair in queries:
 		scores[docs_id[round*PACK + j]] = score[j]
 	tot_scores[query_id] = sorted(scores.items(), key=lambda item:item[1], reverse=True)
 
-output_path = '../../query_likelihood.json'
+output_path = '../../tfidf.json'
 output_file = open(output_path, 'w', encoding='utf-8')
 output_file.write(json.dumps(tot_scores, ensure_ascii=False, indent=2))
 output_file.close()

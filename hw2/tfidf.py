@@ -4,7 +4,7 @@ import math
 
 class TFIDF:
 	def __init__(self, idf_path):
-		self.idf = json.loads(open(idf_path, 'r').read())# idf
+		self.idf = json.loads(open(idf_path, 'r', encoding = 'utf8').read())# idf
 		'''
 		idf = json.loads(open(idf_path, 'r', encoding='utf-8').read())# idf
 		self.idf = []
@@ -35,7 +35,10 @@ class TFIDF:
 		dot = 0
 		for w in q_tf:
 			if w in doc_tf:
-				dot += (doc_tf[w] / len(doc_words)) * (q_tf[w] / len(words)) * self.idf[w] * self.idf[w]
+				if w in self.idf:
+					dot += (doc_tf[w] / len(doc_words)) * (q_tf[w] / len(words)) * self.idf[w] * self.idf[w]
+				else:
+					dot += (doc_tf[w] / len(doc_words)) * (q_tf[w] / len(words)) * 16
 
 
 		q_l = 0
@@ -44,14 +47,14 @@ class TFIDF:
 
 		d_l = 0
 		for w in doc_tf:
-			d_l += (doc_tf[w] / len(doc_tf[w])) * (doc_tf[w] / len(doc_tf[w]))
+			d_l += (doc_tf[w] / len(doc_words)) * (doc_tf[w] / len(doc_words))
 
 		return dot / math.sqrt(q_l) / math.sqrt(d_l)
 
 	def similarity(self, query, doces):
 		# doc_vec = np.linalg.norm(self.transform(doces), axis = 1)
 		# query_vec = np.linalg.norm(self.transform([query]), axis = 1)
-		ans = np.zeros((1, len(doces)))
+		ans = np.zeros((len(doces)))
 		for i in range(len(doces)):
 			ans[i] = self.score(query, doces[i])
 
