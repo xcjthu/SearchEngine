@@ -2,7 +2,7 @@ import json
 from metric import n_dcg, q_measure, n_err
 import numpy as np
 
-pred_filepath = '../../tfidf.json'
+pred_filepath = '../../tfidf_new.json'
 f = open(pred_filepath, 'r', encoding = 'utf8')
 pred_dict = json.loads(f.read())
 f.close()
@@ -28,7 +28,7 @@ f.close()
 print('read true label finished')
 
 
-output_filepath = 'result_tfidf.txt'
+output_filepath = 'result_tfidf_new.txt'
 f = open(output_filepath, 'w', encoding = 'utf8')
 
 ks = [5, 10, 20]
