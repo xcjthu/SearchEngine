@@ -43,11 +43,17 @@ class TFIDF:
 
 		q_l = 0
 		for w in q_tf:
-			q_l += (q_tf[w]/len(words)) * (q_tf[w]/len(words))
+			if w in self.idf:
+				q_l += (q_tf[w]/len(words)) * (q_tf[w]/len(words)) * self.idf[w] * self.idf[w]
+			else:
+				q_l += (q_tf[w]/len(words)) * (q_tf[w]/len(words)) * 16
 
 		d_l = 0
 		for w in doc_tf:
-			d_l += (doc_tf[w] / len(doc_words)) * (doc_tf[w] / len(doc_words))
+			if w in self.idf:
+				d_l += (doc_tf[w] / len(doc_words)) * (doc_tf[w] / len(doc_words)) * self.idf[w] * self.idf[w]
+			else:
+				d_l += (doc_tf[w] / len(doc_words)) * (doc_tf[w] / len(doc_words)) * 16
 
 		return dot / math.sqrt(q_l) / math.sqrt(d_l)
 
