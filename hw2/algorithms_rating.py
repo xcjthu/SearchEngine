@@ -2,7 +2,7 @@ import json
 from metric import n_dcg, q_measure, n_err
 import numpy as np
 
-pred_filepath = '../../query_likelihood.json'
+pred_filepath = '../../tfidf_new.json'
 f = open(pred_filepath, 'r', encoding = 'utf8')
 pred_dict = json.loads(f.read())
 f.close()
@@ -28,7 +28,7 @@ f.close()
 print('read true label finished')
 
 
-output_filepath = 'result_query_likelihood.txt'
+output_filepath = 'result_tfidf_new.txt'
 f = open(output_filepath, 'w', encoding = 'utf8')
 
 ks = [5, 10, 20]
@@ -52,14 +52,16 @@ for k in ks:
             pred_list.append(pred_relevance)
             true_list.append(true_relevance)
         if np.max(true_list) == 0:
-            n_dcg_list.append(0)
-            n_err_list.append(0)
-            q_measure_list.append(0)
+            # n_dcg_list.append(0)
+            # n_err_list.append(0)
+            # q_measure_list.append(0)
+            print('zero label error')
+            continue
         else:
             n_dcg_list.append(n_dcg(pred_list, true_list, k = k))
             n_err_list.append(n_err(pred_list, true_list, k = k))
             q_measure_list.append(q_measure(pred_list, true_list, k = k))
-        print(n_dcg_list[-1], n_err_list[-1], q_measure_list[-1])
+            print(n_dcg_list[-1], n_err_list[-1], q_measure_list[-1])
         
     print(np.mean(n_dcg_list), np.mean(n_err_list), np.mean(q_measure_list))
     f.write('k: '+str(k)+', n_dcg: '+str(np.mean(n_dcg_list))+', n_err: '+str(np.mean(n_err_list))+', q_measure: '+str(np.mean(q_measure_list))+'\n')
