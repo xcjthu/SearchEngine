@@ -12,6 +12,8 @@ from elastic.elastic import insert_doc
 cnt = 0
 fail_cnt = 0
 
+rootPath = ""
+
 
 def print_time():
     print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
@@ -45,8 +47,7 @@ def insert_file(index, doc_type, file_path):
     # date = file_path.split("/")[-1].split("_")[0]
     # title = file_path.split("/")[-1].split("_")[1].replace(".md", "")
     
-
-
+    url = file_path.replace(rootPath, '')
 
     insert_data = {
         "content": content,
@@ -103,4 +104,4 @@ if __name__ == "__main__":
     print(json.dumps(mapping, indent=2))
     create_index(index_name, json.dumps(mapping))
 
-    dfs_search(index_name, doc_type, "TsinghuaNewsV2-20190607020827279/mirror")
+    dfs_search(index_name, doc_type, rootPath)
