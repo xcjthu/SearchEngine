@@ -12,7 +12,7 @@ from elastic.elastic import insert_doc
 cnt = 0
 fail_cnt = 0
 
-rootPath = ""
+rootPath = "/home/xcj/TsinghuaNewsV2-20190607020827279/mirror"
 
 
 def print_time():
@@ -27,8 +27,12 @@ def print_info(s):
 month_day = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 def getContent(html):
-    soup = bfs.BeautifulSoup(html)
-    title = soup.title.text
+    soup = bfs(html)
+    title = soup.title
+    if title is None:
+        title = 'None'
+    else:
+        title = title.text
     for script in soup.findAll('script'):
         script.extract()
     for style in soup.findAll('style'):
