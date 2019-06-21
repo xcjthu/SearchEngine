@@ -12,7 +12,7 @@ from elastic.elastic import insert_doc
 cnt = 0
 fail_cnt = 0
 
-rootPath = "/home/xcj/TsinghuaNewsV2-20190607020827279/mirror"
+rootPath = "/home/xiaochaojun/TsinghuaNewsV4-20190617091014070/mirror/"
 
 
 def print_time():
@@ -38,14 +38,21 @@ def getContent(html):
     for style in soup.findAll('style'):
         style.extract()
     soup.prettify()
-    content = soup.get_text().replace('\n', '')
+    content = soup.get_text().replace('\n', '').replace('\u3000', '').replace('\xa0', '')
     return content, title
 
 
 def insert_file(index, doc_type, file_path):
     global cnt, fail_cnt
-
-    content = open(file_path, "r", encoding="utf8").read()
+    try:
+        content = open(file_path, "r", encoding="utf8").read()
+    except:
+        try:
+            content = open(file_path, "r", encoding = "gbk").read()
+        except:
+            global fail_cnt
+            fail_cnt += 1
+            return None
     content, title = getContent(content)
 
     # date = file_path.split("/")[-1].split("_")[0]

@@ -22,7 +22,7 @@ def root():
 def search():
     if True:  # try:
         args = request.args
-        index = "law"
+        index = "project_for_search_engine"
         doc_type = "data"
 
         if "size" in args:
@@ -44,6 +44,8 @@ def search():
             q = args["query"]
         else:
             q = ""
+
+        '''
         if "gte" in args.keys():
             gte = args["gte"]
         else:
@@ -52,6 +54,7 @@ def search():
             lte = args["lte"]
         else:
             lte = "2026-08-17"
+        '''
 
         body = {
             "query": {
@@ -62,17 +65,17 @@ def search():
                                 where: q
                             }
                         }
-                    ],
-                    "must": [
-                        {
-                            "range": {
-                                "time": {
-                                    "gte": gte,
-                                    "lte": lte
-                                }
-                            }
-                        }
-                    ]
+                    ]#,
+                    #"must": [
+                    #    {
+                    #        "range": {
+                    #            "time": {
+                    #                "gte": gte,
+                    #                "lte": lte
+                    #            }
+                    #        }
+                    #    }
+                    #]
                 }
             }
         }
@@ -116,4 +119,4 @@ def fetch_doc():
 
 
 if __name__ == "__main__":
-    app.run(host="166.111.5.246", port=10086, debug=True, threaded=True)
+    app.run(host="166.111.5.246", port=20086, debug=True, threaded=True)
