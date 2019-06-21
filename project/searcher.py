@@ -25,8 +25,11 @@ def print_info(s):
 
 
 month_day = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+pics = re.compile(r'<img .*?src="(.*?)".*?>')
 
 def getContent(html):
+    global pics
+
     soup = bfs(html)
     title = soup.title
     if title is None:
@@ -39,12 +42,17 @@ def getContent(html):
         style.extract()
     soup.prettify()
     content = soup.get_text().replace('\n', '').replace('\u3000', '').replace('\xa0', '')
-    return content, title
+
+    pic_urls = pics.findall(html)
+
+    return content, title, pic_urls
 
 
 def insert_file(index, doc_type, file_path):
     global cnt, fail_cnt
     try:
+        if file_path[-4:] != 'html' and file_path[-3:] != 'htm':
+            return
         content = open(file_path, "r", encoding="utf8").read()
     except:
         try:
@@ -53,17 +61,20 @@ def insert_file(index, doc_type, file_path):
             global fail_cnt
             fail_cnt += 1
             return None
-    content, title = getContent(content)
+    content, title, pic_urls = getContent(content)
+    url = file_path.replace(rootPath, '')
+    for i in range(len(pic_urls)):
+        pic_urls[i] = url.split('/')[0] + pic_urls[i]
+    
 
     # date = file_path.split("/")[-1].split("_")[0]
     # title = file_path.split("/")[-1].split("_")[1].replace(".md", "")
-    
-    url = file_path.replace(rootPath, '')
 
     insert_data = {
         "content": content,
         "title": title,
-        "url": url
+        "url": url,
+        "pic_urls": json.dumps(pic_urls)
     }
     insert_doc(index, doc_type, insert_data, str(uuid.uuid4()))
 
@@ -76,8 +87,9 @@ def dfs_search(index, doc_type, input_file_path):
         if os.path.isdir(next_file):
             dfs_search(index, doc_type, next_file)
         else:
+            #if filename[-4:] != 'html' or filename[-3:] != 'htm':
+            #    continue
             insert_file(index, doc_type, next_file)
-
 
 if __name__ == "__main__":
     index_name = "project_for_search_engine"
@@ -85,7 +97,7 @@ if __name__ == "__main__":
 
     text = ["title", "content"]
     keyword = []
-    url = ["url"]
+    url = ["url", "pic_urls"]
 
     try:
         delete_index(index_name)
@@ -116,3 +128,4 @@ if __name__ == "__main__":
     create_index(index_name, json.dumps(mapping))
 
     dfs_search(index_name, doc_type, rootPath)
+    print(cnt)
