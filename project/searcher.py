@@ -5,6 +5,7 @@ import multiprocessing
 import uuid
 from bs4 import BeautifulSoup as bfs
 import re
+import math
 
 from elastic.elastic import create_index, delete_index
 from elastic.elastic import insert_doc
@@ -27,13 +28,24 @@ def print_info(s):
 month_day = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 pics = re.compile(r'<img .*?src="(.*?)".*?>')
 
+pageRankVal = json.load(open('resource/pageRankVal.txt', 'r'))
+url2id = json.loads(open('resource/pageRankResult.txt', 'r').readline())
+
 def getContent(html):
     global pics
 
     soup = bfs(html)
-    title = soup.title
+    title = soup.h1
     if title is None:
-        title = 'None'
+        title = soup.h2
+        if title is None:
+            title = soup.h3
+        if title is None:
+            title = soup.h4
+        if title is None:
+            title = 'None'
+        else:
+            title = title.text
     else:
         title = title.text
     for script in soup.findAll('script'):
@@ -50,6 +62,7 @@ def getContent(html):
 
 def insert_file(index, doc_type, file_path):
     global cnt, fail_cnt
+    global pageRankVal, url2id
     try:
         if file_path[-4:] != 'html' and file_path[-3:] != 'htm':
             return
@@ -74,11 +87,14 @@ def insert_file(index, doc_type, file_path):
         "content": content,
         "title": title,
         "url": url,
-        "pic_urls": json.dumps(pic_urls)
+        "pic_urls": json.dumps(pic_urls),
+        "pageRank": math.log(pageRankVal[url2id[url]])/math.log(10) + 7
     }
     insert_doc(index, doc_type, insert_data, str(uuid.uuid4()))
 
     cnt += 1
+    #if cnt > 10000:
+    #    exit(0)
 
 
 def dfs_search(index, doc_type, input_file_path):
@@ -90,6 +106,28 @@ def dfs_search(index, doc_type, input_file_path):
             #if filename[-4:] != 'html' or filename[-3:] != 'htm':
             #    continue
             insert_file(index, doc_type, next_file)
+
+
+def insert_pdf_doc(index, doc_type):
+    filelist = ['resource/doc.txt', 'resource/doc2.txt', 'resource/pdf.txt', 'resource/pdf2.txt']
+    for f in filelist:
+        print(f)
+        fin = open(f, 'r')
+        line = fin.readline()
+        while line:
+            line = json.loads(line)
+            if line['content'] != '':
+                insert_data = {
+                    "content": line['content'],
+                    "title": line['title'],
+                    "url": line['url'],
+                    "pic_urls": "[]",
+                    "pageRank": 4
+                }
+                insert_doc(index, doc_type, insert_data, str(uuid.uuid4()))
+
+            line = fin.readline()
+
 
 if __name__ == "__main__":
     index_name = "project_for_search_engine"
@@ -122,10 +160,15 @@ if __name__ == "__main__":
             "type": "url"
         }
 
+    mapping['pageRank'] = {
+        "type": "double"
+    }
+
     mapping = {"mappings": {doc_type: {"properties": mapping}},
                "settings": {"number_of_replicas": 0, "number_of_shards": 30}}
     print(json.dumps(mapping, indent=2))
     create_index(index_name, json.dumps(mapping))
-
+    
+    insert_pdf_doc(index_name, doc_type)
     dfs_search(index_name, doc_type, rootPath)
     print(cnt)

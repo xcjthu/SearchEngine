@@ -58,26 +58,37 @@ def search():
 
         body = {
             "query": {
-                "bool": {
-                    "should": [
-                        {
-                            "match": {
-                                where: q
-                            }
+                "function_score":{
+                    "query":{
+                        "bool": {
+                            "should": [
+                                {
+                                    "match": {
+                                        "title":{
+                                            "query": q,
+                                            "boost": 3
+                                        }
+                                    }
+                                },
+                                {
+                                    "match":{
+                                        "content":{
+                                            "query": q
+                                        }
+                                    }
+                                }
+                            ]
                         }
-                    ]#,
-                    #"must": [
-                    #    {
-                    #        "range": {
-                    #            "time": {
-                    #                "gte": gte,
-                    #                "lte": lte
-                    #            }
-                    #        }
-                    #    }
-                    #]
+                    },
+            
+                "field_value_factor":{
+                    "field": "pageRank",
+                    "factor": 0.3
+                },
+                "boost_mode": "sum",
                 }
             }
+
         }
         try:
             result = elastic.elastic.search(index, doc_type, body, size=size, from_=from_)
