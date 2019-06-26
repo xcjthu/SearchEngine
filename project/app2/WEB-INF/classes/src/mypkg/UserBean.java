@@ -79,6 +79,7 @@ public class UserBean {
     }
 
     public void SearchResult(String keyword) {
+       String[] keywords = keyword.split(" ");
       String urlString = "";
       try
       {
@@ -123,8 +124,14 @@ public class UserBean {
               pictureUrls[i] = contents.getString("pic_urls");
               pageRanks[i] = contents.getDouble("pageRank");
               pageUrl = "//"+pageUrl;
-              this.contents[i] = content.substring(0, 200)+"...";
+              this.contents[i] = (content.substring(0, 200)+"...").replaceAll(keyword, "<strong style=\"background:yellow\">"+keyword+"</strong>");
+              for (int j = 0; j < keywords.length; j++) {
+                  title = title.replaceAll(keywords[j], "<strong style=\"background:yellow\">"+keyword+"</strong>");
+              }
               this.titles[i] = title;
+              if(pageUrl.contains("pdf")){
+                  this.titles[i] = "<strong>[pdf]</strong>"+this.titles[i];
+              }
               this.urls[i] = pageUrl;
           }
       }catch(Exception e)

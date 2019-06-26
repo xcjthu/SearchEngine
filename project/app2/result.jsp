@@ -57,8 +57,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <%
       for (int i = 0; i < len; ++i){
         %>
-        <%= pageRanks[i] %><br>
-        <%= pageScores[i] %><br>
         <h3 class="t c-gap-bottom-small">
             <a href=<%= urls[i] %> target="_blank"><%= titles[i] %></a>
         </h3>
@@ -68,8 +66,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         <%= contents[i] %>   
                     </p>
             </div>
-        </div>  
-        <!-- <div>
+        </div>
+        <a href="<%= urls[i] %>"><%= urls[i] %></a>  
+        <div>
           <%
           String picture = pictureUrls[i];
           if(picture != null){
@@ -83,7 +82,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             }
           }
           %>
-        </div> -->
+        </div>
         <%
       }
     %>
